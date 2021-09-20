@@ -1,0 +1,75 @@
+---
+title: "DS 202 Lab 2: Chocolate tasting"
+author: "Kyle Schallau"
+date: "9/19/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+## Reading the Data
+```{r}
+library(classdata)
+```
+## Searching for the Best Chocolates
+
+1. How are the cocoa percent distributed? Create both a histogram and a boxplot and describe them. Don’t forget to mention outliers, if there are any.
+
+The cocoa percent appears to be about evenly distributed at around 65-70%. The data does not appear skewed. There are two possible outliers between 95% and 100%.
+```{r}
+hist(choco$CocoaPercent)
+boxplot(choco$CocoaPercent)
+```
+
+2. How does the number of ratings depend on the country of bean origin? Draw a bar chart of the number of ratings by bean origin. [Hint: If your graph is too dense and the labels are not legible, show fewer bean origins.]
+
+Nearly all of the top ten chocolates presented in the bar chart are located in South America.The top ten ratings have at least 50 ratings. The country with the highest number of ratings is Venezuela.
+```{r}
+counts <- table(choco$CountryBeanOrigin)
+top10 <- head(sort(counts, decreasing = TRUE), n = 10)
+par(mar=c(14, 4.1, 4.1, 2.1))
+barplot(top10, main="Rating Distribution", las=2, xlab="")
+```
+
+3. Do ratings depend on the cacao percentage of a chocolate bar? Create both numerical and graphical summaries, and explain. [Hint: Think about why the scatterplot is not a very good choice for visualization here.]
+
+Ratings mostly do not depend on the cocoa percentage of a chocolate bar. Most the ratings were between 2.5 and 3.5, with the darkest chocolate having just a slightly lower rating. 
+```{r}
+summaries = tapply(choco$Rating, choco$CocoaPercent, summary)
+head(summaries, n=5)
+boxplot(choco$Rating~choco$CocoaPercent,)
+```
+
+4. How do different bean origins compare in terms of the flavor of chocolates? Are beans from some places better than the other? Create both numerical and graphical summaries, and explain.
+
+Do to a very large number of characteristics, the flavor of the beans was hard to predict. 
+```{r}
+flavor <- table(choco$Characteristics2)
+length(flavor)
+summary(as.numeric(flavor))
+```
+
+```{r}
+boxplot(flavor)
+```
+
+5. If you work on this lab by yourself, brainstorm two analyses you would like to perform. If you work with a teammate, brainstorm at least three analyses with your teammate. Describe in plain language what comparisons are you making. Create suitable numerical and graphical summaries for your analyses. Describe the results.
+
+For my first analysis, I am determining if the the Country of bean origin influences the amount of cocoa that goes into the chocolate.
+Based on the below information, a majority of the countries put around the same amount of cocoa in their chocolate.Based on the selected 10 countries used in the boxplot, Australia might have a slightly lower cocoa count than the rest of the 10 countries, but most are the same.
+```{r}
+summaries = tapply(choco$CocoaPercent, choco$CountryBeanOrigin, summary)
+select10 <- head(summaries, n=10)
+select10
+boxplot(select10, main="Cocoa Distribution", las=2)
+```
+
+For my second analysis, I am determining if what ingredients influence ratings the most.
+Based on the below information, it appears that certain ingredients do play a role in the ratings. Each chocolate is different so, it would have a varying rating
+```{r}
+summaries = tapply(choco$Rating, choco$Ingredients, summary)
+select10 <- head(summaries, n=10)
+select10
+boxplot(select10, main="Rating Distribution", las=2)
+```
